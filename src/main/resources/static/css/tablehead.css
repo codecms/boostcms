@@ -1,0 +1,23 @@
+      .fixed-table-container thead th .sortable {
+          background-image: url('/css/plugins/images/sort_sort.png');
+          cursor: pointer;
+          background-position: right;
+          background-repeat: no-repeat;
+          padding-right: 30px;
+      }
+  
+     .fixed-table-container thead th .asc {
+         background-image: url('/css/plugins/images/sort_asc.png');
+         cursor: pointer;
+         background-position: right;
+         background-repeat: no-repeat;
+         padding-right: 30px;
+     }
+
+     .fixed-table-container thead th .desc {
+         background-image: url('/css/plugins/images/sort_desc.png');
+         cursor: pointer;
+         background-position: right;
+         background-repeat: no-repeat;
+         padding-right: 30px;
+    }

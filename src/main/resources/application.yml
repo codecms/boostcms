@@ -1,0 +1,43 @@
+server:
+  session-timeout: 1800
+#    tomcat:
+#        max-threads: 1000
+#        min-spare-threads: 30
+  port: 6071
+#    uri-encoding: utf-8
+#security:
+#  basic:
+#    enabled: false
+spring:
+  resources:
+    cache:
+      cachecontrol:
+        no-cache: true
+        no-store: true
+        max-age: 1
+      period: 1
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 3000000
+      max-request-size: 3000000
+  devtools:
+    restart:
+      enabled: true
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mybatis/**/*Mapper.xml
+  typeAliasesPackage: com.bootdo.**.domain
+

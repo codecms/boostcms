@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<button shiro:hasPermission="${pathName}:${classname}:add" type="button" class="btn  btn-primary" onclick="add()">
+								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							</button>
+							<button shiro:hasPermission="${pathName}:${classname}:batchRemove" type="button" class="btn  btn-danger"
+								onclick="batchRemove()">
+								<i class="fa fa-trash" aria-hidden="true"></i>删除
+							</button>
+						</div>
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="searching()">查询</button>
+						</div>
+						
+#foreach($column in $columnsRes)
+						<div class="columns pull-right col-md-1 nopadding">
+#if($column.isSelect == '1')
+								<input id="${column.attrname}" name="${column.attrname}" type="hidden" class="form-control">
+							       <select id="list${column.attrname}" class="form-control" onchange="${column.attrname}Change()">
+									   <option value=''>所有 ${column.comments}</option>
+								</select>
+#else
+								<input id="${column.attrname}" name="${column.attrname}" type="text" class="form-control"
+												placeholder="${column.comments}">                             
+#end                               
+						</div>
+#end
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+		<div>
+			<script type="text/javascript" th:inline="javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';				
+				<!-- var paraMap_js= [[${paraMap}]]; -->				
+			</script>
+		</div>
+		<div shiro:hasPermission="${pathName}:${classname}:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="${pathName}:${classname}:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/${pathName}/${classname}/common.js"></script>
+	<script type="text/javascript" src="/js/appjs/${pathName}/${classname}/${classname}.js"></script>
+</body>
+</html>

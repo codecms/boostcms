@@ -1,0 +1,68 @@
+
+
+#foreach ($column in $columns)
+#if($column.isSelect == '1')
+function ${column.attrname}Change(){
+	var a=$("#list${column.attrname}").val();
+	$("#${column.attrname}").val(a);
+}
+function  ${column.attrname}List(){
+
+	 $.ajax({
+		cache : true,
+		type : "get",
+		url : "/${pathName}/${classname}/${column.attrname}/${column.attrType}",
+		dataType : "json",
+		async : false,
+		error : function(request) {
+			parent.layer.alert("Connection error");
+		},
+		success : function(data) {
+			for(var i=0;i<data.length;i++){
+				$("#list${column.attrname}").append("<option value='"+data[i].name+"'>"+data[i].value+"</option>");
+			}
+			
+		}
+	});
+	
+	var statusValue2 = $("#${column.attrname}").val();
+	$("#list${column.attrname}").find("option[value='"+statusValue2+"']").attr("selected",true);
+}
+#end
+#end
+
+
+
+
+function validateRule() {
+	var icon = "<i class='fa fa-times-circle'></i> ";
+	$("#signupForm").validate({
+	    ignore : [],
+		rules : {
+#foreach ($column in $columns)
+#if($column.nullable == 'NO' && $column.columnName != $pk.columnName)
+		 ${column.attrname} : {
+				  required : true
+#if($column.attrType == 'Date' )
+				  ,dateISO:true
+#elseif($column.attrType == 'Float' ||  $column.attrType == 'Double')
+				  ,number:true
+#elseif($column.attrType == 'Integer' ||  $column.attrType == 'Long')
+				  ,digits:true
+#end
+			},
+#end
+#end
+		},
+		messages : {		
+#foreach ($column in $columns)
+#if($column.nullable == 'NO' && $column.columnName != $pk.columnName)
+			${column.attrname} : {
+				required : icon+"请输入：${column.comments} "
+			},
+#end
+#end
+
+		}
+	})
+}

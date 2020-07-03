@@ -1,0 +1,92 @@
+package ${package}.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+import java.util.HashMap;
+
+import ${package}.dao.${className}Dao;
+import ${package}.domain.${className}DO;
+import ${package}.service.${className}Service;
+
+
+
+@Service
+public class ${className}ServiceImpl implements ${className}Service {
+	@Autowired
+	private ${className}Dao ${classname}Dao;
+	
+	@Override
+	public ${className}DO get(${pk.attrType} ${pk.attrname}){
+		return ${classname}Dao.get(${pk.attrname});
+	}
+	
+	@Override
+	public List<${className}DO> list(Map<String, Object> map){
+		return ${classname}Dao.list(map);
+	}
+	
+	@Override
+	public int count(Map<String, Object> map){
+		return ${classname}Dao.count(map);
+	}
+	
+	@Override
+	public int save(${className}DO ${classname}){
+		return ${classname}Dao.save(${classname});
+	}
+	
+	@Override
+	public int update(${className}DO ${classname}){
+		return ${classname}Dao.update(${classname});
+	}
+	
+	@Override
+	public int remove(${pk.attrType} ${pk.attrname}){
+		return ${classname}Dao.remove(${pk.attrname});
+	}
+	
+	@Override
+	public int batchRemove(${pk.attrType}[] ${pk.attrname}s){
+		return ${classname}Dao.batchRemove(${pk.attrname}s);
+	}
+	
+	
+		
+	@Override
+	public Map<${pk.attrType},${className}DO> getAllMap(Map<String, Object> map){
+		List<${className}DO> typeList=list(map);
+		Map<${pk.attrType},${className}DO> rest=new HashMap<>();
+		for(${className}DO one:typeList) {
+			rest.put(one.get${pk.attrName}(), one);
+		}
+		return rest;
+	}
+	
+/*	
+	@Override
+	public List<Map<String,Object>> buildSelectOption(){
+		
+		
+		Map<String, Object> paraMap=new HashMap<>();
+		paraMap.put("sort", "name");
+		paraMap.put("order", "desc");
+		
+		List<${className}DO> typeList=list(paraMap);
+		
+		List<Map<String,Object>> li = new LinkedList<>();
+		
+		for(${className}DO em:typeList) {
+	         Map<String,Object> one=new HashMap<>();
+	         one.put("name", String.valueOf(em.get${pk.attrName}()));
+	         one.put("value",em.getValue());
+	         li.add(one);
+		}
+
+		return li;
+	}
+*/	
+}

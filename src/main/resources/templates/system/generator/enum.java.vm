@@ -1,0 +1,56 @@
+package ${package}.domain;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public enum ${attrType}  {
+	Unknown(0,"未知");
+	
+	private int value;
+	private String name;
+	private ${attrType}(int i,String na) {
+		this.value=i;
+		this.name=na;
+	}
+	public int getValue() {
+		return value;
+	}
+	public void setValue(int value) {
+		this.value = value;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public static ${attrType} getInstance(int i) {
+		
+		${attrType} [] arr=${attrType}.values();
+		for(${attrType} baseEnum: arr) {
+			if(baseEnum.getValue()==i) {
+				return baseEnum;
+			}
+		}
+			
+		return Unknown;
+	}
+	
+	 @JsonValue
+	 public String getJsonValue() {
+	        return name;
+	 }
+}
+
+
