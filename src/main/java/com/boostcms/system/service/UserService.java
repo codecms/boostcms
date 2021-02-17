@@ -23,11 +23,11 @@ public interface UserService {
 
 	int count(Map<String, Object> map);
 
-	int save(UserDO user);
+	int save(UserDO user) throws Exception;
 
-	int update(UserDO user);
+	int update(UserDO user) throws Exception;
 
-	int remove(Long userId);
+	int remove(Long userId) throws Exception;
 
 
 
@@ -36,7 +36,7 @@ public interface UserService {
 	Set<String> listRoles(Long userId);
 
 	int resetPwd(UserVO userVO,UserDO userDO) throws Exception;
-	int adminResetPwd(UserVO userVO) throws Exception;
+	int adminResetPwd(UserVO userVO,UserDO login) throws Exception;
 	Tree<DeptDO> getTree();
 
 

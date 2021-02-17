@@ -20,7 +20,7 @@ import com.boostcms.common.domain.Tree;
 
 public class BuildTree {
 
-	public static <T> Tree<T> build(List<Tree<T>> nodes) {
+	public static <T> Tree<T> build(List<Tree<T>> nodes,String rootID) {
 
 		if (nodes == null) {
 			return null;
@@ -30,10 +30,20 @@ public class BuildTree {
 		for (Tree<T> children : nodes) {
 
 			String pid = children.getParentId();
-			if (pid == null || "0".equals(pid)) {
-				topNodes.add(children);
-
-				continue;
+			if (pid == null  ) {
+				 topNodes.add(children);
+				 continue;
+			}
+			if(rootID.equals("0")) {  
+				if(pid.equals("0")) {
+				     topNodes.add(children);
+				     continue;
+				 }
+			}else {
+				if(children.getId().equals(rootID)){
+						 topNodes.add(children);
+						 continue;
+				}
 			}
 
 			for (Tree<T> parent : nodes) {
@@ -51,6 +61,8 @@ public class BuildTree {
 		Tree<T> root = new Tree<T>();
 		if (topNodes.size() == 1) {
 			root = topNodes.get(0);
+		}else if(nodes.size()==1) {
+			root=nodes.get(0);
 		} else {
 			root.setId("-1");
 			root.setParentId("");

@@ -55,6 +55,9 @@ function load() {
                         	  return 'error';
                           }							
 						},
+						onPageChange: function(number, size) {
+                             document.querySelector("#vieworg").scrollIntoView(true);
+                        },
 						queryParams : function(params) {
 							return {
 								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
@@ -103,7 +106,10 @@ function load() {
 									title : '字典值类型',
 									sortable: true,
 									formatter : function(value, row, index) {
-										return dictType_js[row.type].name;
+										try{return dictType_js[row.type].name;}
+							             catch(err){return notDataException;}
+									
+										//return dictType_js[row.type].name;
 										//paraMap_js[id];
 									}
 								},
@@ -152,8 +158,9 @@ function add() {
 		type : 2,
 		title : '增加',
 		maxmin : true,
-		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
+		area: ['auto', '500px'],
+		offset: '30px',
+		shadeClose : true, // 点击遮罩关闭层
 		content : prefix + '/add' // iframe的url
 	});
 }
@@ -162,8 +169,9 @@ function edit(id) {
 		type : 2,
 		title : '编辑',
 		maxmin : true,
+		area: ['auto', '500px'],
+		offset: '30px',
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/edit/' + id // iframe的url
 	});
 }

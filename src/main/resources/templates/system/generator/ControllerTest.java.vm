@@ -1,0 +1,340 @@
+package ${package}.controller;
+
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import ${package}.domain.${className}DO;
+import ${package}.service.${className}Service;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+ 
+@SpringBootTest(classes = ${className}Controller.class)
+public class ${className}ControllerTest  {
+
+	@MockBean
+	private ${className}Service ${classname}Service;
+	
+	@InjectMocks
+	 private ${className}Controller ${classname}Controller; 
+	 
+	 private MockMvc mockMvc;
+	 
+	  @BeforeEach
+	 public void setUp()
+	 {
+		   MockitoAnnotations.initMocks(this);
+		   mockMvc = MockMvcBuilders.standaloneSetup(${classname}Controller).build();
+/* 需要权限时打开这段，并设置正确的用户
+			org.apache.shiro.mgt.SecurityManager secm = new org.apache.shiro.mgt.DefaultSecurityManager();
+			org.apache.shiro.SecurityUtils.setSecurityManager(secm);
+			UserDO usedo = new UserDO();
+			usedo.setUsername("admin");
+			usedo.setDeptId(0L);
+			org.apache.shiro.subject.Subject subject = org.apache.shiro.util.ThreadContext.getSubject();
+			if (subject == null) {
+				org.apache.shiro.subject.PrincipalCollection principals = new org.apache.shiro.subject.SimplePrincipalCollection(
+						usedo, "admin");
+				subject = (new org.apache.shiro.subject.Subject.Builder().principals(principals)).buildSubject();
+
+				org.apache.shiro.util.ThreadContext.bind(subject);
+			}
+*/
+	  }
+	
+	@Test
+	public void testHtml() throws Exception {
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/${pathName}/${classname}").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+       String forwardUrl=mvcResult.getResponse().getForwardedUrl();
+       assertEquals(forwardUrl,"${pathName}/${classname}/${classname}");
+    
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+	
+    @Test
+	public void testList() throws Exception {	
+	
+	List<${className}DO> ${classname}List =new LinkedList<>();
+	${className}DO oneNode=new ${className}DO();
+	${className}DO oneNode2=new ${className}DO();
+	${classname}List.add(oneNode);
+	${classname}List.add(oneNode2);
+	Mockito.when(${classname}Service.list(Mockito.any())).thenReturn(${classname}List );
+	Mockito.when(${classname}Service.count(Mockito.any())).thenReturn(${classname}List.size());
+	//执行请求
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/${pathName}/${classname}/list").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+       //获取返回编码
+      int status = mvcResult.getResponse().getStatus();
+           
+        //获取返回结果
+        String content = mvcResult.getResponse().getContentAsString();
+        System.out.println(content);
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+	
+		@Test
+	public void testaddHtml() throws Exception {
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/${pathName}/${classname}/add").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+       String forwardUrl=mvcResult.getResponse().getForwardedUrl();
+       assertEquals(forwardUrl,"${pathName}/${classname}/add");
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+			@Test
+	public void testeditHtml() throws Exception {
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/${pathName}/${classname}/edit/1").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+       String forwardUrl=mvcResult.getResponse().getForwardedUrl();
+       assertEquals(forwardUrl,"${pathName}/${classname}/edit");
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+		
+	@Test
+	public void testSaveFail() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.save(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${className}DO  n2=(${className}DO )(args[0]);
+		  	     assertEquals("100name",n2.getTestName());
+		         return 1;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/save")
+                        .param("id", "1")
+                      .param("testName", "100name")
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+		@Test
+	public void testSave() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.save(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${className}DO  dst=(${className}DO )(args[0]);
+		
+		         ${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     exp.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     exp.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     exp.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+		
+		  	     assertEquals(exp,dst);
+		         return 0;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/save")
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')        .param("$column.attrname", "test100") 
+#elseif($column.attrType.trim() == 'Integer')        .param("$column.attrname", "1001") 
+#elseif($column.attrType.trim() == 'Long')        .param("$column.attrname", "1002") 
+#elseif($column.attrType.trim() == 'Date')        .param("$column.attrname", "2020-09-23 13:36:20") 
+#end
+#end
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+	
+	@Test
+	public void testUpdate() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.update(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${className}DO  dst=(${className}DO )(args[0]);
+		
+		         ${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     exp.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     exp.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     exp.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+		
+		  	     assertEquals(exp,dst);
+		         return 0;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/update")
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')        .param("$column.attrname", "test100") 
+#elseif($column.attrType.trim() == 'Integer')        .param("$column.attrname", "1001") 
+#elseif($column.attrType.trim() == 'Long')        .param("$column.attrname", "1002") 
+#elseif($column.attrType.trim() == 'Date')        .param("$column.attrname", "2020-09-23 13:36:20") 
+#end
+#end
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+	@Test
+	public void testDelete() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.remove(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${pk.attrType} n2=(${pk.attrType} )(args[0]);
+		  	     assertEquals((${pk.attrType})1,n2);
+		         return 0;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/remove")
+                        .param("id", "1")
+                      .param("testName", "100name")
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+		@Test
+	public void testDeleteFail() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.remove(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${pk.attrType} n2=(${pk.attrType} )(args[0]);
+		  	     assertEquals((${pk.attrType})1,n2);
+		         return 1;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/remove")
+                      .param("id", "1")
+                      .param("testName", "100name")
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+	
+	
+		@Test
+	public void testBatchRemove() throws Exception {
+		
+		
+        Mockito.when(${classname}Service.batchRemove(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${pk.attrType}[] n2=(${pk.attrType}[])(args[0]);
+		  	     assertArrayEquals(new ${pk.attrType}[] {103,104},n2);
+		         return 0;
+		     }
+		 });	
+		
+		   //执行请求
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${pathName}/${classname}/batchRemove")
+                        .param("ids[]", "103")
+                        .param("ids[]", "104")
+                      .param("testName", "100name")
+        .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+ 
+        //获取返回编码
+        int status = mvcResult.getResponse().getStatus();
+       
+ 
+        //断言，判断返回编码是否正确
+        assertEquals(200,status);
+	}
+}

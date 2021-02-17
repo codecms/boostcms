@@ -45,7 +45,7 @@ public class MenuServiceImpl implements MenuService {
 			trees.add(tree);
 		}
 		// 默认顶级菜单为０，根据数据库实际情况调整
-		Tree<MenuDO> t = BuildTree.build(trees);
+		Tree<MenuDO> t = BuildTree.build(trees,"0");
 		return t;
 	}
 
@@ -93,7 +93,7 @@ public class MenuServiceImpl implements MenuService {
 			trees.add(tree);
 		}
 		// 默认顶级菜单为０，根据数据库实际情况调整
-		Tree<MenuDO> t = BuildTree.build(trees);
+		Tree<MenuDO> t = BuildTree.build(trees,"0");
 		return t;
 	}
 
@@ -126,7 +126,7 @@ public class MenuServiceImpl implements MenuService {
 			trees.add(tree);
 		}
 		// 默认顶级菜单为０，根据数据库实际情况调整
-		Tree<MenuDO> t = BuildTree.build(trees);
+		Tree<MenuDO> t = BuildTree.build(trees,"0");
 		return t;
 	}
 

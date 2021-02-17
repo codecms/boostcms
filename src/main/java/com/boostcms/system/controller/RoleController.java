@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.boostcms.common.aspect.Log;
 import com.boostcms.common.controller.BaseController;
 import com.boostcms.common.utils.R;
 import com.boostcms.system.domain.RoleDO;
@@ -29,6 +30,7 @@ public class RoleController extends BaseController {
 	@Autowired
 	RoleService roleService;
 
+	@Log("角色列表")
 	@RequiresPermissions("system:role:role")
 	@GetMapping()
 	String role() {
@@ -59,7 +61,7 @@ public class RoleController extends BaseController {
 		return prefix + "/edit";
 	}
 
-
+	@Log("角色新增")
 	@RequiresPermissions("system:role:add")
 	@PostMapping("/save")
 	@ResponseBody()
@@ -72,7 +74,7 @@ public class RoleController extends BaseController {
 		}
 	}
 
-
+	@Log("角色修改")
 	@RequiresPermissions("system:role:edit")
 	@PostMapping("/update")
 	@ResponseBody()
@@ -85,7 +87,7 @@ public class RoleController extends BaseController {
 		}
 	}
 
-
+	@Log("角色删除")
 	@RequiresPermissions("system:role:remove")
 	@PostMapping("/remove")
 	@ResponseBody()
@@ -98,8 +100,8 @@ public class RoleController extends BaseController {
 		}
 	}
 	
+	@Log("角色批量删除")
 	@RequiresPermissions("system:role:batchRemove")
-
 	@PostMapping("/batchRemove")
 	@ResponseBody
 	R batchRemove(@RequestParam("ids[]") Long[] ids) {

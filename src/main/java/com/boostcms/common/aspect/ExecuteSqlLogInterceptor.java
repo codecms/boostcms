@@ -11,7 +11,8 @@ import java.util.Properties;
 import java.util.UUID;
  
 import javax.servlet.http.HttpServletRequest;
- 
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -38,7 +39,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.boostcms.common.utils.IPUtils;
+import com.boostcms.system.domain.SqllogDO;
 import com.boostcms.system.domain.UserDO;
+
+
 
 
 
@@ -80,23 +84,26 @@ public class ExecuteSqlLogInterceptor implements Interceptor {
 		if(!exexcSql.contains("insert into sys_log") ) {
 			log.info(exexcSql);
 		}
-		
-		String username = "";
-		String ip = "";
+
+		SqllogDO sqllog=new SqllogDO();
+		sqllog.setGmtCreate(new Date());
+		sqllog.setSqldm(StringUtils.abbreviate(exexcSql, 5000));
 		boolean bWrite=false;
 		
 		//保存修改和删除操作日志
 		if(exexcSql.startsWith("update") || exexcSql.startsWith("delete")
 				|| ( exexcSql.startsWith("insert") 
 						&& !exexcSql.contains("insert into sys_log")  
-						&&  !exexcSql.contains("insert into sql_log")
-						&&  !exexcSql.contains("insert into sys_sqlinter"))
+						&&  !exexcSql.contains("insert into sys_accesslog")
+						&&  !exexcSql.contains("insert into sys_sqllog"))
 			){	
+            
 
 			RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 			if(requestAttributes != null){ //登录后不为空,没登录执行定时任务时为空
 				HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 				ShiroHttpSession session=(ShiroHttpSession) request.getSession();
+				request.getRequestURI();
 			
 			//	NetworkUtils.getIpAddress(request);
 	            if (session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY) == null) {
@@ -105,9 +112,9 @@ public class ExecuteSqlLogInterceptor implements Interceptor {
 	                SimplePrincipalCollection principalCollection = (SimplePrincipalCollection) session
 	                        .getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
 	                UserDO userDO = (UserDO) principalCollection.getPrimaryPrincipal();
-	                username=userDO.getUsername();
-	                ip=IPUtils.getIpAddr(request);
-	                //  UserDO currUser = ShiroUtils.getUser();
+	                sqllog.setUsername(userDO.getUsername());
+	                sqllog.setUserId(userDO.getUserId());
+	                sqllog.setIp(IPUtils.getIpAddr(request));
 	            }       	
 			}
 			
@@ -119,15 +126,33 @@ public class ExecuteSqlLogInterceptor implements Interceptor {
 		}
 		Object returnValue=null;
 		try {
+	        long beginTime = System.currentTimeMillis();
 			returnValue = invocation.proceed();
+	        long time = System.currentTimeMillis() - beginTime;
 			if(bWrite) {
-			//	writeSql(exexcSql,username,ip);
+				String method=getSub();
+				sqllog.setMethod(method);	
+				sqllog.setTime((int)time);
+				SqlInterceptorThread.sqlDataQueue.offer(sqllog);
 			}
 			
 		} catch (Exception e) {
 			throw e;
 		}
 		return returnValue;
+	}
+	
+	String getSub() {
+		StackTraceElement[] stackS = Thread.currentThread().getStackTrace();
+		int i=stackS.length-1;
+		String nameSub="";
+		for(;i>0;i--) {
+			if(stackS[i].getClassName().startsWith("com.boostcms")) {
+				nameSub=stackS[i].getClassName().split("\\$")[0]+":"+stackS[i].getMethodName();
+				break;
+			}
+		}
+		return nameSub;
 	}
  
 	@Override

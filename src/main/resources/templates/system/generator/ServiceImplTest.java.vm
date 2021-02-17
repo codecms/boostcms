@@ -1,0 +1,242 @@
+package ${package}.service.impl;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import io.github.benas.randombeans.api.EnhancedRandom;
+
+import java.util.List;
+import java.util.Map;
+
+import java.util.HashMap;
+
+import ${package}.dao.${className}Dao;
+import ${package}.domain.${className}DO;
+import ${package}.service.${className}Service;
+
+
+
+@SpringBootTest(classes = ${className}ServiceImpl.class)
+public class ${className}ServiceImplTest {
+	@MockBean
+	private ${className}Dao ${classname}Dao;
+	
+	@InjectMocks
+	private ${className}ServiceImpl ${classname}ServiceImpl;
+	
+	 @BeforeEach
+	public void setUp() throws Exception {
+		   MockitoAnnotations.initMocks(this);
+	}
+	
+	@Test
+	public void testAllGetSet() {
+		${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		exp.set${column.attrName}("test100"); 
+      assertEquals(exp.get${column.attrName}(),"test100");
+#elseif($column.attrType.trim() == 'Integer')		exp.set${column.attrName}(1001);
+      assertEquals(exp.get${column.attrName}(),(Integer)1001);
+#elseif($column.attrType.trim() == 'Long')		exp.set${column.attrName}(1002L);
+      assertEquals(exp.get${column.attrName}(),(Long)1001L);
+#elseif($column.attrType.trim() == 'Date')		exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+      assertEquals(exp.get${column.attrName}(),new Date(120,8,23,13,36,20));
+#end
+#end
+	       
+	}
+	
+	@Test
+	public void testGet() {
+		
+		${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		exp.set${column.attrName}("test100"); 
+      assertEquals(exp.get${column.attrName}(),"test100");
+#elseif($column.attrType.trim() == 'Integer')		exp.set${column.attrName}(1001);
+      assertEquals(exp.get${column.attrName}(),(Integer)1001);
+#elseif($column.attrType.trim() == 'Long')		exp.set${column.attrName}(1002L);
+      assertEquals(exp.get${column.attrName}(),(Long)1001L);
+#elseif($column.attrType.trim() == 'Date')		exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+      assertEquals(exp.get${column.attrName}(),new Date(120,8,23,13,36,20));
+#end
+#end
+
+	   Mockito.when(${classname}Dao.get(Mockito.any())).thenReturn(exp);
+	   assertEquals(${classname}ServiceImpl.get(1),exp);
+	}
+	
+	
+		@Test
+	public void testList() {
+		
+			List<${className}DO> ${classname}List =new LinkedList<>();
+		
+		${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		exp.set${column.attrName}("test100"); 
+      assertEquals(exp.get${column.attrName}(),"test100");
+#elseif($column.attrType.trim() == 'Integer')		exp.set${column.attrName}(1001);
+      assertEquals(exp.get${column.attrName}(),(Integer)1001);
+#elseif($column.attrType.trim() == 'Long')		exp.set${column.attrName}(1002L);
+      assertEquals(exp.get${column.attrName}(),(Long)1001L);
+#elseif($column.attrType.trim() == 'Date')		exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+      assertEquals(exp.get${column.attrName}(),new Date(120,8,23,13,36,20));
+#end
+#end
+
+      ${classname}List.add(exp);
+      
+	   Mockito.when(${classname}Dao.list(Mockito.any())).thenReturn(${classname}List);
+	   assertEquals(${classname}ServiceImpl.list(null),${classname}List);
+	}
+	
+	@Test
+	public void testCount() {
+	    Mockito.when(${classname}Dao.count(Mockito.any())).thenReturn(203);
+	   assertEquals(${classname}ServiceImpl.count(null),203);
+	}
+	
+		@Test
+	public void testSave() {
+	
+	        Mockito.when(${classname}Dao.save(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${className}DO  dst=(${className}DO )(args[0]);
+		
+		         ${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     exp.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     exp.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     exp.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+		
+		  	     assertEquals(exp,dst);
+		         return 0;
+		     }
+		 });	
+	
+			         ${className}DO newTag=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     newTag.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     newTag.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     newTag.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     newTag.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+	
+	  ${classname}ServiceImpl.save(newTag);
+	}
+	
+	
+			@Test
+	public void testUpdate() {
+	
+	        Mockito.when(${classname}Dao.update(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${className}DO  dst=(${className}DO )(args[0]);
+		
+		         ${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     exp.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     exp.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     exp.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+		
+		  	     assertEquals(exp,dst);
+		         return 0;
+		     }
+		 });	
+	
+			         ${className}DO newTag=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		  	     newTag.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		  	     newTag.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		  	     newTag.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		  	     newTag.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+	
+	  ${classname}ServiceImpl.update(newTag);
+	}
+	
+				@Test
+	public void testRemove() {
+	        Mockito.when(${classname}Dao.remove(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${pk.attrType} n2=(${pk.attrType} )(args[0]);
+		  	     assertEquals((${pk.attrType})1,n2);
+		         return 0;
+		     }
+		 });
+		 
+		  ${classname}ServiceImpl.remove(1);	
+	}
+	
+					@Test
+	public void testBatchRemove() {
+	        Mockito.when(${classname}Dao.batchRemove(Mockito.any())).thenAnswer(new Answer() {
+		     public Object answer(InvocationOnMock invocation) {
+		         Object[] args = invocation.getArguments();
+		         ${pk.attrType}[] n2=(${pk.attrType}[] )(args[0]);
+		  	     assertEquals(new ${pk.attrType}[]{201,202},n2);
+		         return 0;
+		     }
+		 });
+		 
+		  ${classname}ServiceImpl.batchRemove(new ${pk.attrType}[]{201,202} );	
+	}
+	
+						@Test
+	public void testGetAllMap() {
+	
+				List<${className}DO> ${classname}List =new LinkedList<>();
+		
+		${className}DO exp=new  ${className}DO();
+#foreach ($column in $columns)
+#if($column.attrType.trim() == 'String')		exp.set${column.attrName}("test100"); 
+#elseif($column.attrType.trim() == 'Integer')		exp.set${column.attrName}(1001);
+#elseif($column.attrType.trim() == 'Long')		exp.set${column.attrName}(1002L);
+#elseif($column.attrType.trim() == 'Date')		exp.set${column.attrName}(new Date(120,8,23,13,36,20)); 
+#end
+#end
+
+      ${classname}List.add(exp);
+      Map<${pk.attrType},${className}DO> expMap=new HashMap<>();
+      expMap.put(exp.get${pk.attrName}(), exp);
+      
+	   Mockito.when(${classname}Dao.list(Mockito.any())).thenReturn(${classname}List);
+	   
+	   	 Map<${pk.attrType},${className}DO> dst= ${classname}ServiceImpl.getAllMap(null);	
+	   	 
+	   	 assertEquals(dst,expMap);
+	
+	}
+}

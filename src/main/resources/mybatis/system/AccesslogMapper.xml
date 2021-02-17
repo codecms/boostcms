@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boostcms.system.dao.AccesslogDao">
+
+      <resultMap id="AccesslogDOMap" type="com.boostcms.system.domain.AccesslogDO">
+      
+    </resultMap>
+
+
+	<select id="get" resultType="com.boostcms.system.domain.AccesslogDO"  resultMap="AccesslogDOMap">
+		select `id`,`user_id`,`username`,`operation`,`time`,`method`,`params`,`ip`,`gmt_create`,`url` from sys_accesslog where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.boostcms.system.domain.AccesslogDO" resultMap="AccesslogDOMap">
+		select `id`,`user_id`,`username`,`operation`,`time`,`method`,`params`,`ip`,`gmt_create`,`url` from sys_accesslog
+        <where>  
+		  		  <if test="id != null"> and  id = #{id}  </if>
+		  		  <if test="userId != null"> and  user_id = #{userId}  </if>
+		  		  <if test="username != null and username != ''"> and  username like  CONCAT('%',#{username},'%')   </if>
+		  		  <if test="operation != null and operation != ''"> and  operation like  CONCAT('%',#{operation},'%')   </if>
+		  		  <if test="time != null"> and  time = #{time}  </if>
+		  		  <if test="method != null and method != ''"> and  method like  CONCAT('%',#{method},'%')   </if>
+		  		  <if test="params != null and params != ''"> and  params like  CONCAT('%',#{params},'%')   </if>
+		  		  <if test="ip != null and ip != ''"> and  ip like  CONCAT('%',#{ip},'%')   </if>
+		  		  <if test="gmtCreate != null"> and  gmt_create = #{gmtCreate}  </if>
+		  		  <if test="url != null and url != ''"> and  url like  CONCAT('%',#{url},'%')   </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from sys_accesslog
+		 <where>  
+		  		  <if test="id != null"> and  id = #{id}  </if>
+		  		  <if test="userId != null"> and  user_id = #{userId}  </if>
+		  		  <if test="username != null and username != ''"> and  username like  CONCAT('%',#{username},'%')   </if>
+		  		  <if test="operation != null and operation != ''"> and  operation like  CONCAT('%',#{operation},'%')   </if>
+		  		  <if test="time != null"> and  time = #{time}  </if>
+		  		  <if test="method != null and method != ''"> and  method like  CONCAT('%',#{method},'%')   </if>
+		  		  <if test="params != null and params != ''"> and  params like  CONCAT('%',#{params},'%')   </if>
+		  		  <if test="ip != null and ip != ''"> and  ip like  CONCAT('%',#{ip},'%')   </if>
+		  		  <if test="gmtCreate != null"> and  gmt_create = #{gmtCreate}  </if>
+		  		  <if test="url != null and url != ''"> and  url like  CONCAT('%',#{url},'%')   </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.boostcms.system.domain.AccesslogDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_accesslog
+		(
+			`user_id`, 
+			`username`, 
+			`operation`, 
+			`time`, 
+			`method`, 
+			`params`, 
+			`ip`, 
+			`gmt_create`, 
+			`url`
+		)
+		values
+		(
+			#{userId}, 
+			#{username}, 
+			#{operation}, 
+			#{time}, 
+			#{method}, 
+			#{params}, 
+			#{ip}, 
+			#{gmtCreate}, 
+			#{url}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.boostcms.system.domain.AccesslogDO">
+		update sys_accesslog 
+		<set>
+		<if test="userId != null">	`user_id` = #{userId},  </if>
+		<if test="username != null">	`username` = #{username},  </if>
+		<if test="operation != null">	`operation` = #{operation},  </if>
+		<if test="time != null">	`time` = #{time},  </if>
+		<if test="method != null">	`method` = #{method},  </if>
+		<if test="params != null">	`params` = #{params},  </if>
+		<if test="ip != null">	`ip` = #{ip},  </if>
+		<if test="gmtCreate != null">	`gmt_create` = #{gmtCreate},  </if>
+		<if test="url != null">	`url` = #{url} </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from sys_accesslog where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from sys_accesslog where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -15,7 +15,7 @@
 		select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`,`img` from sys_user
         <where>  
 		  		  <if test="userId != null"> and  user_id = #{userId}  </if>
-		  		  <if test="username != null and username != ''"> and  username like  CONCAT('%',#{username},'%')   </if>
+		  		  <if test="username != null and username != ''"> and  username =#{username}   </if>
 		  		  <if test="name != null and name != ''"> and  name like  CONCAT('%',#{name},'%')   </if>
 		  		  <if test="password != null and password != ''"> and  password like  CONCAT('%',#{password},'%')   </if>
                   <if test="deptIds != null and deptIds.size() > 0">and dept_id in

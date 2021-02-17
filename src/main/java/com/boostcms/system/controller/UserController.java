@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.boostcms.common.aspect.Log;
 import com.boostcms.common.controller.BaseController;
 import com.boostcms.common.domain.Tree;
 import com.boostcms.common.utils.MD5Utils;
@@ -63,9 +64,18 @@ public class UserController extends BaseController {
 	@Autowired
 	private DeptService sysDeptService;
 	
+	@Log("用户列表")
 	@RequiresPermissions("system:user:user")
 	@GetMapping("")
 	String user(Model model) {
+		UserDO login = getUser();
+		Map<Long,DeptDO> deptMap=sysDeptService.getAllMap(new HashMap<>());
+		
+		model.addAttribute("deptMap", deptMap);
+		
+		model.addAttribute("loginname", login.getUsername());
+		model.addAttribute("logindept", login.getDeptId());
+		
 		return prefix + "/user";
 	}
 
@@ -76,6 +86,20 @@ public class UserController extends BaseController {
 		Map<String,Object> map1=QueryStruct.objectToMap(queryStruct);
 		Map<String,Object> params=QueryStruct.objectToMap(user);
 		params.putAll(map1);
+		
+		UserDO loginUser = getUser();
+		Long deptid=loginUser.getDeptId();
+		if(getUser().getUsername().equals("admin")) {
+			deptid=0L;	
+		}
+		if(params.get("deptId")!= null && !params.get("deptId").toString().isEmpty()) {
+			
+		}else {
+			if(deptid != 0L) {
+				params.put("deptId", deptid);
+			}
+		}
+		
         Query query = new Query(params);
 		List<UserDO> sysUserList = userService.list(query);
 		int total = userService.count(query);
@@ -132,11 +156,11 @@ public class UserController extends BaseController {
 		}
 	}
 	
-	
+	@Log("用户新增")
 	@RequiresPermissions("system:user:add")
 	@PostMapping("/save")
 	@ResponseBody
-	R save(@RequestParam(value="imgs",required=false) MultipartFile file1,UserDO user) throws IOException {
+	R save(@RequestParam(value="imgs",required=false) MultipartFile file1,UserDO user) throws Exception {
 		
 		if(null!=file1) {
 			if(file1.getBytes().length!=0) {
@@ -152,10 +176,11 @@ public class UserController extends BaseController {
 		return R.error();
 	}
 
+	@Log("用户修改")
 	@RequiresPermissions("system:user:edit")
 	@PostMapping("/update")
 	@ResponseBody
-	R update(@RequestParam(value="imgs",required=false) MultipartFile file1,UserDO user) throws IOException {
+	R update(@RequestParam(value="imgs",required=false) MultipartFile file1,UserDO user) throws Exception {
 		if(null!=file1) {
 			if(file1.getBytes().length!=0) {
 				user.setImg(file1.getBytes());
@@ -170,11 +195,11 @@ public class UserController extends BaseController {
 
 
 
-
+	@Log("用户删除")
 	@RequiresPermissions("system:user:remove")
 	@PostMapping("/remove")
 	@ResponseBody
-	R remove(Long id) {
+	R remove(Long id) throws Exception {
 
 		if (userService.remove(id) > 0) {
 			return R.ok();
@@ -191,6 +216,7 @@ public class UserController extends BaseController {
 		return !userService.exit(params);
 	}
 
+	@Log("用户重置密码")
 	@RequiresPermissions("system:user:resetPwd")
 	@GetMapping("/resetPwd/{id}")
 	String resetPwd(@PathVariable("id") Long userId, Model model) {
@@ -201,8 +227,21 @@ public class UserController extends BaseController {
 		return prefix + "/reset_pwd";
 	}
 
+	@RequiresPermissions("system:user:edit")
+	@GetMapping("/editPwd/{id}")
+	String editPwd(@PathVariable("id") Long userId, Model model) {
+
+		UserDO userDO = new UserDO();
+		userDO.setUserId(userId);
+		model.addAttribute("user", userDO);
+		return prefix + "/edit_pwd";
+	}
+	
+	
+	@Log("用户重置密码")
 	@PostMapping("/resetPwd")
 	@ResponseBody
+	@RequiresPermissions("system:user:edit")
 	R resetPwd(UserVO userVO) {
 
 		try{
@@ -213,13 +252,15 @@ public class UserController extends BaseController {
 		}
 
 	}
+	
+	@Log("用户重置密码")
 	@RequiresPermissions("system:user:resetPwd")
 	@PostMapping("/adminResetPwd")
 	@ResponseBody
 	R adminResetPwd(UserVO userVO) {
 
 		try{
-			userService.adminResetPwd(userVO);
+			userService.adminResetPwd(userVO,getUser());
 			return R.ok();
 		}catch (Exception e){
 			return R.error(1,e.getMessage());

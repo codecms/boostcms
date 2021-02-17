@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.boostcms.common.aspect.Log;
 import com.boostcms.common.controller.BaseController;
 import com.boostcms.common.domain.Tree;
 import com.boostcms.common.utils.R;
@@ -32,6 +33,7 @@ public class MenuController extends BaseController {
 	@Autowired
 	MenuService menuService;
 
+	@Log("菜单列表")
 	@RequiresPermissions("system:menu:menu")
 	@GetMapping()
 	String menu(Model model) {
@@ -75,6 +77,7 @@ public class MenuController extends BaseController {
 		return prefix+"/edit";
 	}
 
+	@Log("菜单新建")
 	@RequiresPermissions("system:menu:add")
 	@PostMapping("/save")
 	@ResponseBody
@@ -87,6 +90,7 @@ public class MenuController extends BaseController {
 		}
 	}
 
+	@Log("菜单修改")
 	@RequiresPermissions("system:menu:edit")
 	@PostMapping("/update")
 	@ResponseBody
@@ -99,7 +103,7 @@ public class MenuController extends BaseController {
 		}
 	}
 
-
+	@Log("菜单删除")
 	@RequiresPermissions("system:menu:remove")
 	@PostMapping("/remove")
 	@ResponseBody

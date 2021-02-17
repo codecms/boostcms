@@ -79,12 +79,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int count(Map<String, Object> map) {
+    	
+        String deptId ="";
+        if(map.containsKey("deptId")) {
+        	Object deptIdObj=map.get("deptId");
+        	if(deptIdObj != null) {
+        		deptId=deptIdObj.toString();
+        	}
+        }
+        if (StringUtils.isNotBlank(deptId)) {
+            Long deptIdl = Long.valueOf(deptId);
+            List<Long> childIds = deptService.listChildrenIds(deptIdl);
+            childIds.add(deptIdl);
+            map.put("deptId", null);
+            map.put("deptIds",childIds);
+        }
+    	
         return userMapper.count(map);
     }
 
     @Transactional
     @Override
-    public int save(UserDO user) {
+    public int save(UserDO user) throws Exception {
+    	if(user.getDeptId()==null || user.getDeptId()==0L) {
+      		 throw new Exception("部门不能为空！");
+      	}
         int count = userMapper.save(user);
         Long userId = user.getUserId();
         List<Long> roles = user.getRoleIds();
@@ -103,7 +122,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int update(UserDO user) {
+    public int update(UserDO user) throws Exception {
+        UserDO userDO = get(user.getUserId());
+
+        if ("admin".equals(userDO.getUsername()) ) {
+       	 if(!"admin".equals(user.getUsername())) {
+                 throw new Exception("超级管理员的账号不能修改登录名！");
+            }
+            user.setDeptId(0L);
+       }else {
+       	if(user.getDeptId()==null || user.getDeptId()==0L) {
+       		 throw new Exception("部门不能为空！");
+       	}
+       }
+        
         int r = userMapper.update(user);
         Long userId = user.getUserId();
         List<Long> roles = user.getRoleIds();
@@ -123,7 +155,11 @@ public class UserServiceImpl implements UserService {
 
     //    @CacheEvict(value = "user")
     @Override
-    public int remove(Long userId) {
+    public int remove(Long userId) throws Exception {
+        UserDO userDO = get(userId);
+        if ("admin".equals(userDO.getUsername())) {
+                   throw new Exception("超级管理员的账号不能删除！");
+        }
         userRoleMapper.removeByUserId(userId);
         return userMapper.remove(userId);
     }
@@ -141,11 +177,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int resetPwd(UserVO userVO, UserDO userDO) throws Exception {
-        if (Objects.equals(userVO.getUserDO().getUserId(), userDO.getUserId())) {
-            if (Objects.equals(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdOld()), userDO.getPassword())) {
-                userDO.setPassword(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdNew()));
-                return userMapper.update(userDO);
+    public int resetPwd(UserVO userVO, UserDO loginuser) throws Exception {
+    	loginuser = get(loginuser.getUserId());
+        if (Objects.equals(userVO.getUserDO().getUserId(), loginuser.getUserId())) {
+            if (Objects.equals(MD5Utils.encrypt(loginuser.getUsername(), userVO.getPwdOld()), loginuser.getPassword())) {
+            	loginuser.setPassword(MD5Utils.encrypt(loginuser.getUsername(), userVO.getPwdNew()));
+                return userMapper.update(loginuser);
             } else {
                 throw new Exception("输入的旧密码有误！");
             }
@@ -155,10 +192,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int adminResetPwd(UserVO userVO) throws Exception {
+    public int adminResetPwd(UserVO userVO,UserDO login) throws Exception {
         UserDO userDO = get(userVO.getUserDO().getUserId());
+        if(!"admin".equals(login.getUsername())) {
+      	  throw new Exception("只有超级管理员能重置密码！");
+      }
         if ("admin".equals(userDO.getUsername())) {
-            throw new Exception("超级管理员的账号不允许直接重置！");
+        	if(!"admin".equals(login.getUsername())) {
+                  throw new Exception("超级管理员的账号不允许其他人重置！");
+        	}
         }
         userDO.setPassword(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdNew()));
         return userMapper.update(userDO);
@@ -202,7 +244,7 @@ public class UserServiceImpl implements UserService {
             trees.add(tree);
         }
         // 默认顶级菜单为０，根据数据库实际情况调整
-        Tree<DeptDO> t = BuildTree.build(trees);
+        Tree<DeptDO> t = BuildTree.build(trees,"0");
         return t;
     }
 

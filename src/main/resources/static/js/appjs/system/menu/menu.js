@@ -44,13 +44,12 @@ var load = function () {
                         visible: false,
                         align: 'center',
                         valign: 'center',
-                        width: '5%'
                     },
                     {
                         title: '名称',
                         valign: 'center',
                         field: 'name',
-                        width: '20%'
+  
                     },
 
                     {
@@ -58,7 +57,6 @@ var load = function () {
                         field: 'icon',
                         align: 'center',
                         valign: 'center',
-                        width : '5%',
                         formatter: function (item, index) {
                             return item.icon == null ? ''
                                 : '<i class="' + item.icon
@@ -70,7 +68,6 @@ var load = function () {
                         field: 'type',
                         align: 'center',
                         valign: 'center',
-                        width : '10%',
                         formatter: function (item, index) {
                             if (item.type === 0) {
                                 return '<span class="label label-primary">目录</span>';
@@ -86,13 +83,11 @@ var load = function () {
                     {
                         title: '地址',
                         valign: 'center',
-                        width : '20%',
                         field: 'url'
                     },
                     {
                         title: '权限标识',
                         valign: 'center',
-                        width : '20%',
                         field: 'perms'
                     },
                     {
@@ -131,8 +126,8 @@ function add(pId) {
         type: 2,
         title: '增加菜单',
         maxmin: true,
+        area: ['auto', '500px'],
         shadeClose: false, // 点击遮罩关闭层
-        area: ['800px', '520px'],
         content: prefix + '/add/' + pId // iframe的url
     });
 }
@@ -164,8 +159,8 @@ function edit(id) {
         type: 2,
         title: '菜单修改',
         maxmin: true,
+        area: ['auto', '500px'],
         shadeClose: false, // 点击遮罩关闭层
-        area: ['800px', '520px'],
         content: prefix + '/edit/' + id // iframe的url
     });
 }

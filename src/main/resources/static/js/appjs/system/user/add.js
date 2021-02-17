@@ -43,11 +43,6 @@ function getCheckedRoles() {
 	return adIds;
 }
 function save() {
-
-
-
-
-
 	$("#roleIds").val(getCheckedRoles());
 	$.ajax({
 		cache : true,
@@ -77,30 +72,6 @@ function save() {
 
 
 function save2() {
-
-var formData = new FormData();
-formData.append("file", $("#imgs"));
-formData.append("language"   , "eng");
-formData.append("apikey"  , "2de633294088957");
-formData.append("isOverlayRequired", true);
-//Send OCR Parsing request asynchronously
-jQuery.ajax({
-url: 'https://api.ocr.space/parse/image',
-data: formData,
-dataType: 'json',
-cache: false,
-contentType: false,
-processData: false,
-type: 'POST',
-async : false,
-success: function (ocrParsedResult) {
-	parent.layer.alert("img Connection error");
-},
-		error : function(request) {
-			parent.layer.alert("img Connection error");
-		},
-});
-
 	$("#roleIds").val(getCheckedRoles());
 　　　　var option = {
       　　 url : '/system/user/save',

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boostcms.common.aspect.Log;
 import com.boostcms.common.controller.BaseController;
 import com.boostcms.common.domain.Tree;
 import com.boostcms.common.utils.MD5Utils;
@@ -46,6 +47,7 @@ public class LoginController extends BaseController {
     @Autowired
     MenuService menuService;
 
+	@Log("首页")
     @GetMapping({"/", ""})
     String welcome(Model model) {
 
@@ -60,16 +62,28 @@ public class LoginController extends BaseController {
 
         model.addAttribute("picUrl", "/logo.png");        
         model.addAttribute("username", getUser().getUsername());
-        return "index";
+        return "indexcms";
     }
 
+    @GetMapping({"/indexmobile"})
+    String indexmobile(Model model) {
+        List<Tree<MenuDO>> menus = menuService.listMenuTree(getUserId());
+        model.addAttribute("menus", menus);
+        model.addAttribute("name", getUser().getName());
+
+        model.addAttribute("picUrl", "/logo.png");        
+        model.addAttribute("username", getUser().getUsername());
+        return "indexmobile";
+    }
+    
     @GetMapping("/login")
     String login(Model model) {
         model.addAttribute("username", "");
         model.addAttribute("password", "");
-        return "login";
+        return "logincms";
     }
 
+	@Log("登录")
     @PostMapping("/login")
     @ResponseBody
     R ajaxLogin(String username, String password,String verify,HttpServletRequest request) {
@@ -99,6 +113,7 @@ public class LoginController extends BaseController {
         }
     }
 
+	@Log("退出登录")
     @GetMapping("/logout")
     String logout() {
         ShiroUtils.logout();

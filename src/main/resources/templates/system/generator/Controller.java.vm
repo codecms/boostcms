@@ -24,6 +24,7 @@ import com.boostcms.common.utils.PageUtils;
 import com.boostcms.common.utils.Query;
 import com.boostcms.common.utils.R;
 import com.boostcms.common.utils.QueryStruct;
+import com.boostcms.common.aspect.Log;
 
 /**
  * ${comments}
@@ -39,6 +40,7 @@ public class ${className}Controller {
 	@Autowired
 	private ${className}Service ${classname}Service;
 	
+	@Log("${comments}列表")
 	@GetMapping()
 	@RequiresPermissions("${pathName}:${classname}:${classname}")
 	String ${className}(Model model){
@@ -78,6 +80,7 @@ public class ${className}Controller {
 	/**
 	 * 保存
 	 */
+	@Log("${comments}新增")
 	@ResponseBody
 	@PostMapping("/save")
 	@RequiresPermissions("${pathName}:${classname}:add")
@@ -90,6 +93,7 @@ public class ${className}Controller {
 	/**
 	 * 修改
 	 */
+	@Log("${comments}修改")
 	@ResponseBody
 	@PostMapping("/update")
 	@RequiresPermissions("${pathName}:${classname}:edit")
@@ -101,6 +105,7 @@ public class ${className}Controller {
 	/**
 	 * 删除
 	 */
+	@Log("${comments}删除")
 	@PostMapping( "/remove")
 	@ResponseBody
 	@RequiresPermissions("${pathName}:${classname}:remove")
@@ -114,6 +119,7 @@ public class ${className}Controller {
 	/**
 	 * 删除
 	 */
+	@Log("${comments}批量删除")
 	@PostMapping( "/batchRemove")
 	@ResponseBody
 	@RequiresPermissions("${pathName}:${classname}:batchRemove")

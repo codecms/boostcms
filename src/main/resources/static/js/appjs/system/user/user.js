@@ -85,6 +85,17 @@ function load(deptId) {
 						title : '用户名'
 					},
 					{
+						field : 'deptId',
+						title : '邮箱',
+						formatter: function(value, row, index) {
+							if(row.deptId==0){
+								return '-';
+							}else{
+								return deptMap_js[row.deptId].name;
+							}
+						}
+					},
+					{
 						field : 'email',
 						title : '邮箱'
 					},
@@ -128,7 +139,18 @@ function load(deptId) {
 							var f = '<a class="btn btn-success btn-sm ' + s_resetPwd_h + '" href="#" title="重置密码"  mce_href="#" onclick="resetPwd(\''
 								+ row.userId
 								+ '\')"><i class="fa fa-key"></i></a> ';
-							return e + d + f;
+							var m = '<a class="btn btn-success btn-sm ' + s_edit_pwd + '" href="#" title="修改密码"  mce_href="#" onclick="editPwd(\''
+							+ row.userId
+							+ '\')"><i class="fa fa-key"></i></a> ';
+							if(loginname != 'admin' && loginname !=row.username ){
+								m='';
+								f='';
+								if(logindept == row.deptId){
+									e='';
+									d='';
+								}
+							}
+							return e + d + f+m;
 						}
 					} ]
 			});
@@ -155,8 +177,8 @@ function add() {
 		type : 2,
 		title : '增加用户',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/add'
 	});
 }
@@ -186,18 +208,29 @@ function edit(id) {
 		type : 2,
 		title : '用户修改',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : false,
-		area : [ '800px', '520px' ],
 		content : prefix + '/edit/' + id // iframe的url
 	});
 }
+
+function editPwd(id) {
+	layer.open({
+		type : 2,
+		title : '修改密码',
+		maxmin : true,
+		shadeClose : false, // 点击遮罩关闭层
+		content : prefix + '/editPwd/' + id // iframe的url
+	});
+}
+
+
 function resetPwd(id) {
 	layer.open({
 		type : 2,
 		title : '重置密码',
 		maxmin : true,
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '400px', '260px' ],
 		content : prefix + '/resetPwd/' + id // iframe的url
 	});
 }

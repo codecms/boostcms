@@ -12,7 +12,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import com.boostcms.common.utils.BDException;
-import com.boostcms.common.utils.DateUtils;
+
 import com.boostcms.system.domain.ColumnDO;
 import com.boostcms.system.domain.TableDO;
 
@@ -55,6 +55,9 @@ public class GenUtils {
         templates.add("templates/system/generator/add.js.vm");
         templates.add("templates/system/generator/edit.js.vm");
         templates.add("templates/system/generator/common.js.vm");
+        
+        templates.add("templates/system/generator/ControllerTest.java.vm");
+        templates.add("templates/system/generator/ServiceImplTest.java.vm");
         return templates;
     }
 
@@ -89,6 +92,11 @@ public class GenUtils {
             	columnDO.setIsSelect(1);
             }
             columnDO.setComments(column.get("columnComment"));
+            if(column.get("columnComment")!=null && column.get("columnComment").startsWith("ENUM:")) {
+            	columnDO.setIsSelect(1);
+            	columnDO.setDataType("ENUM");
+            	columnDO.setComments(column.get("columnComment").replace("ENUM:", ""));
+            }
             if(column.get("columnComment")!=null && column.get("columnComment").startsWith("isExtenalID:")) {
             	columnDO.setIsSelect(1);
             	columnDO.setComments(column.get("columnComment").replace("isExtenalID:", ""));
@@ -99,7 +107,16 @@ public class GenUtils {
             	columnDO.setDataType("ISJAVAENUM");
             	columnDO.setComments(column.get("columnComment").replace("isJAVAENUM:", ""));
             }
-            
+            if(columnDO.getComments() != null  ) {
+            	int index=columnDO.getComments().indexOf(";");
+            	if(index>0) {
+            		columnDO.setComments(columnDO.getComments().substring(0, index));
+            	}
+            	index=columnDO.getComments().indexOf("；");            	
+               if(index>0) {
+            		columnDO.setComments(columnDO.getComments().substring(0, index));
+            	}
+            }
             
             columnDO.setExtra(column.get("extra"));
 
@@ -158,7 +175,7 @@ public class GenUtils {
         map.put("package", config.getString("package"));
         map.put("author", config.getString("author"));
         map.put("email", config.getString("email"));
-        map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
+        map.put("datetime",org.apache.commons.lang3.time.DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         VelocityContext context = new VelocityContext(map);
 
         //获取模板列表
@@ -172,7 +189,7 @@ public class GenUtils {
 
             try {
                 //添加到zip
-                zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), tableDO.getClassName(), config.getString("package").substring(config.getString("package").lastIndexOf(".") + 1))));
+                zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), tableDO.getClassName(),config )));
                 IOUtils.write(sw.toString(), zip, "UTF-8");
                 IOUtils.closeQuietly(sw);
                 zip.closeEntry();
@@ -204,7 +221,7 @@ public class GenUtils {
 
                 try {
                     //添加到zip
-                    zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), columnDO.getAttrType(), config.getString("package").substring(config.getString("package").lastIndexOf(".") + 1))));
+                    zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), columnDO.getAttrType(), config)));
                     IOUtils.write(sw.toString(), zip, "UTF-8");
                     IOUtils.closeQuietly(sw);
                     zip.closeEntry();
@@ -251,11 +268,24 @@ public class GenUtils {
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, String classname, String className, String packageName) {
-        String packagePath = "main" + File.separator + "java" + File.separator;
+    public static String getFileName(String template, String classname, String className,
+    		 Configuration config) {
+    	//config
+    	String orgName=config.getString("package");
+    	String packageName=orgName.substring(orgName.lastIndexOf(".") + 1);
+        String packagePath = "main" + File.separator + "java" + File.separator+ orgName.replace(".", File.separator) + File.separator;;
         //String modulesname=config.getString("packageName");
-        if (StringUtils.isNotBlank(packageName)) {
-            packagePath += packageName.replace(".", File.separator) + File.separator;
+        
+     //   if (StringUtils.isNotBlank(packageName)) {
+     //       packagePath += packageName.replace(".", File.separator) + File.separator;
+     //   }
+        if(template.contains("ControllerTest.java.vm")) {
+        	packagePath = "test" + File.separator + "java" + File.separator+ orgName.replace(".", File.separator) + File.separator;;
+            return packagePath + "controller" + File.separator + className + "ControllerTest.java";
+        }
+        if(template.contains("ServiceImplTest.java.vm")) {
+        	packagePath = "test" + File.separator + "java" + File.separator+ orgName.replace(".", File.separator) + File.separator;;
+            return packagePath + "service" + File.separator + "impl" + File.separator + className + "ServiceImplTest.java";
         }
 
         if (template.contains("domain.java.vm")) {
@@ -287,7 +317,7 @@ public class GenUtils {
         }
 
         if (template.contains("Mapper.xml.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "mapper" + File.separator + packageName + File.separator + className + "Mapper.xml";
+            return "main" + File.separator + "resources" + File.separator + "mybatis" + File.separator + packageName + File.separator + className + "Mapper.xml";
         }
 
         if (template.contains("list.html.vm")) {

@@ -52,6 +52,10 @@ function load() {
 							$('#exampleTable').bootstrapTable('destroy');
 							return '请重新登录';
 						},
+						onPageChange: function(number, size) {	
+
+                             document.querySelector("#vieworg").scrollIntoView(true);
+                        },
 						onLoadSuccess:function(data){//返回数据结构不对的，一般是后台出错了							
 	                      if(data.hasOwnProperty("total") && data.hasOwnProperty("rows")){                              
                           }else{
@@ -95,6 +99,8 @@ function load() {
 									formatter : function(value, row, index) {
 										return row.${column.attrname};
 										//paraMap_js[id];
+										//let obj = paraMap_js[row.typeId];
+							            //return (obj!=null?obj.name:exp);
 									}
 								},
 #end
@@ -135,7 +141,8 @@ function add() {
 		title : '增加',
 		maxmin : true,
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
+		area : [ 'auto', '520px' ],
+		offset: '30px',
 		content : prefix + '/add' // iframe的url
 	});
 }
@@ -145,7 +152,8 @@ function edit(id) {
 		title : '编辑',
 		maxmin : true,
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
+		area : [ 'auto', '520px' ],
+		offset: '30px',
 		content : prefix + '/edit/' + id // iframe的url
 	});
 }

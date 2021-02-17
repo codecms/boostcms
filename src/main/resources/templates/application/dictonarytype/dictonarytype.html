@@ -2,14 +2,14 @@
 <html>
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
-<body class="gray-bg">
+<body id="vieworg" class="gray-bg">
 	<div class="wrapper wrapper-content ">
 		<div class="col-sm-12">
 			<div class="ibox">
 				<div class="ibox-body">
 					<div class="fixed-table-toolbar">
 						<div class="columns pull-left">
-							<button shiro:hasPermission="application:dictonarytype:add" type="button" class="btn  btn-primary" onclick="add()">
+							<button  shiro:hasPermission="application:dictonarytype:add" type="button" class="btn  btn-primary" onclick="add()">
 								<i class="fa fa-plus" aria-hidden="true"></i>添加
 							</button>
 							<button shiro:hasPermission="application:dictonarytype:batchRemove" type="button" class="btn  btn-danger"
@@ -30,7 +30,7 @@
 												placeholder="">                             
 						</div>
 					</div>
-					<table id="exampleTable" data-mobile-responsive="true">
+					<table id="exampleTable" >
 					</table>
 				</div>
 			</div>

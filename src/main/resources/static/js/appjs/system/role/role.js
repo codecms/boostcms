@@ -75,7 +75,7 @@ function load() {
 }
 
 function reLoad() {
-    load();
+   	$('#exampleTable').bootstrapTable('refresh');
 }
 
 function add() {
@@ -84,8 +84,8 @@ function add() {
 		type : 2,
 		title : '添加角色',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/add' // iframe的url
 	});
 }
@@ -116,8 +116,8 @@ function edit(id) {
 		type : 2,
 		title : '角色修改',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : true, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/edit/' + id // iframe的url
 	});
 }

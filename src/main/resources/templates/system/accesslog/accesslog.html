@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+
+
+						</div>
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="searching()">查询</button>
+						</div>
+						
+						<div class="columns pull-right col-md-1 nopadding">
+								<input id="url" name="url" type="text" class="form-control"
+												placeholder="">                             
+						</div>
+						<div class="columns pull-right col-md-1 nopadding">
+								<input id="gmtCreate" name="gmtCreate" type="text" class="form-control"
+												placeholder="访问时间">                             
+						</div>
+						<div class="columns pull-right col-md-1 nopadding">
+								<input id="ip" name="ip" type="text" class="form-control"
+												placeholder="IP地址">                             
+						</div>
+
+		
+						<div class="columns pull-right col-md-1 nopadding">
+								<input id="operation" name="operation" type="text" class="form-control"
+												placeholder="用户操作">                             
+						</div>
+						<div class="columns pull-right col-md-1 nopadding">
+								<input id="username" name="username" type="text" class="form-control"
+												placeholder="用户名">                             
+						</div>
+
+					</div>
+					<table id="exampleTable">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+		<div>
+
+		</div>
+
+		</div>
+
+		</div>
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/system/accesslog/common.js"></script>
+	<script type="text/javascript" src="/js/appjs/system/accesslog/accesslog.js"></script>
+</body>
+</html>

@@ -137,6 +137,10 @@ function validateRule() {
 				required : "#newsletter:checked",
 				minlength : 2
 			},
+			deptName:"required",
+			deptId:"required",
+			status:"required",
+			role:"required",
 			agree : "required"
 		},
 		messages : {

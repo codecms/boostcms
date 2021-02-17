@@ -119,8 +119,8 @@ function add(pId) {
 		type : 2,
 		title : '增加',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/add/' + pId
 	});
 }
@@ -129,8 +129,8 @@ function edit(id) {
 		type : 2,
 		title : '编辑',
 		maxmin : true,
+		area: ['auto', '500px'],
 		shadeClose : false, // 点击遮罩关闭层
-		area : [ '800px', '520px' ],
 		content : prefix + '/edit/' + id // iframe的url
 	});
 }

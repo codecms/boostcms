@@ -1,5 +1,6 @@
 package com.boostcms.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -51,7 +52,7 @@ public class DateConverConfig {
                if(source == null) {
             	   return null;
                }
-                return source.trim();
+                return StringUtils.normalizeSpace(source) ;
             }
         };
     }
